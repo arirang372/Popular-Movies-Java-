@@ -13,13 +13,13 @@ import retrofit2.http.Query;
 
 public interface MovieService {
 
-    @GET("/3/movie/{sort_by}")
-    Call<Movies> getMovie(@Path("sort_by") String sortBy, @Query("api_key") String apiKey);
+	@GET("/3/movie/{sort_by}")
+	Call<Movies> getMovie(@Path("sort_by") String sortBy, @Query("api_key") String apiKey);
 
-    @GET("/3/movie/{id}/reviews")
-    Observable<Response<Reviews>> getReviewsMovie(@Path("id") long id, @Query("api_key") String apiKey);
+	@GET("/3/movie/{id}/reviews")
+	Observable<Response<Reviews>> getReviewsMovie(@Path("id") long id, @Query("api_key") String apiKey);
 
-    @GET("/3/movie/{id}/videos")
-    Observable<Response<Trailers>> getTrailersMovie(@Path("id") long id, @Query("api_key") String apiKey);
+	@GET("/3/movie/{id}/videos")
+	Observable<Response<Trailers>> getTrailersMovie(@Path("id") long id, @Query("api_key") String apiKey);
 
 }

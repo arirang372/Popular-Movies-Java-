@@ -5,5 +5,6 @@ package com.jogoler.android.tmdb;
  */
 
 public interface Command {
-    void execute();
+
+	void execute();
 }

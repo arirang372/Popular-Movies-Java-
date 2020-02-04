@@ -8,88 +8,78 @@ import android.support.annotation.NonNull;
  * Created by Gilbert on 8/20/2017.
  */
 
-public class Review implements Parcelable, Comparable<Review>{
+public class Review implements Parcelable, Comparable<Review> {
 
-    /**
-     * id : 55a58e46c3a3682bb2000065
-     * author : Andres Gomez
-     * content : The minions are a nice idea and the animation and London recreation is really good, but that's about it.
+	public static final Creator<Review> CREATOR = new Creator<Review>() {
+		@Override
+		public Review createFromParcel(Parcel in) {
+			return new Review(in);
+		}
 
-     The script is boring and the jokes not really funny.
-     * url : https://www.themoviedb.org/review/55a58e46c3a3682bb2000065
-     */
+		@Override
+		public Review[] newArray(int size) {
+			return new Review[size];
+		}
+	};
+	private String author;
+	private String content;
+	private String id;
+	private String url;
 
-    private String id;
-    private String author;
-    private String content;
-    private String url;
+	protected Review(Parcel in) {
+		id = in.readString();
+		author = in.readString();
+		content = in.readString();
+		url = in.readString();
+	}
 
-    protected Review(Parcel in) {
-        id = in.readString();
-        author = in.readString();
-        content = in.readString();
-        url = in.readString();
-    }
+	@Override
+	public int compareTo(@NonNull Review review) {
+		return 0;
+	}
 
-    public static final Creator<Review> CREATOR = new Creator<Review>() {
-        @Override
-        public Review createFromParcel(Parcel in) {
-            return new Review(in);
-        }
+	@Override
+	public int describeContents() {
+		return 0;
+	}
 
-        @Override
-        public Review[] newArray(int size) {
-            return new Review[size];
-        }
-    };
+	public String getAuthor() {
+		return author;
+	}
 
-    public String getId() {
-        return id;
-    }
+	public String getContent() {
+		return content;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public String getAuthor() {
-        return author;
-    }
+	public String getUrl() {
+		return url;
+	}
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
+	public void setAuthor(String author) {
+		this.author = author;
+	}
 
-    public String getContent() {
-        return content;
-    }
+	public void setContent(String content) {
+		this.content = content;
+	}
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getUrl() {
-        return url;
-    }
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(id);
-        parcel.writeString(author);
-        parcel.writeString(content);
-        parcel.writeString(url);
-    }
-
-    @Override
-    public int compareTo(@NonNull Review review) {
-        return 0;
-    }
+	@Override
+	public void writeToParcel(Parcel parcel, int i) {
+		parcel.writeString(id);
+		parcel.writeString(author);
+		parcel.writeString(content);
+		parcel.writeString(url);
+	}
 }

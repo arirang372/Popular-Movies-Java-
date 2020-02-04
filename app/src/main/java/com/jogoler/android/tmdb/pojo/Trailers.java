@@ -1,23 +1,23 @@
 package com.jogoler.android.tmdb.pojo;
 
-import com.google.gson.annotations.SerializedName;
-
-import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Gilbert on 8/20/2017.
  */
 
 public class Trailers {
-    public List<Trailer> getTrailers() {
-        return trailers;
-    }
 
-    @SerializedName("results")
-    private List<Trailer> trailers = new ArrayList<>();
+	@SerializedName("results")
+	private List<Trailer> trailers;
 
-    public Trailers(List<Trailer> trailers) {
-        this.trailers = trailers;
-    }
+	public Trailers(List<Trailer> trailers) {
+		this.trailers = trailers;
+	}
+
+	public List<Trailer> getTrailers() {
+		return trailers;
+	}
 }

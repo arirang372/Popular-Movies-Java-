@@ -1,5 +1,9 @@
 package com.jogoler.android.tmdb.task;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.AsyncTask;
 import android.support.annotation.StringDef;
 
@@ -9,10 +13,6 @@ import com.jogoler.android.tmdb.Command;
 import com.jogoler.android.tmdb.pojo.Movie;
 import com.jogoler.android.tmdb.pojo.MovieService;
 import com.jogoler.android.tmdb.pojo.Movies;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;

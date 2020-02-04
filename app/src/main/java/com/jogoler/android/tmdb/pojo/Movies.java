@@ -1,9 +1,9 @@
 package com.jogoler.android.tmdb.pojo;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Gilbert on 8/20/2017.
@@ -11,13 +11,10 @@ import java.util.List;
 
 public class Movies {
 
-    public List<Movie> getMovies() {
-        return movies;
-    }
+	@SerializedName("results")
+	private List<Movie> movies = new ArrayList<>();
 
-    @SerializedName("results")
-    private List<Movie> movies = new ArrayList<>();
-
-
-
+	public List<Movie> getMovies() {
+		return movies;
+	}
 }

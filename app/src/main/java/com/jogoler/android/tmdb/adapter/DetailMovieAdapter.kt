@@ -60,7 +60,7 @@ class DetailMovieAdapter(private val listener: DetailMovieContract.MovieListener
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
         val element = data[position]
-        when(holder){
+        when (holder) {
             is TitleViewHolder -> holder.bind(element as String)
             is TrailerViewHolder -> holder.bind(element as Trailer)
             is ReviewViewHolder -> holder.bind(element as Review)
