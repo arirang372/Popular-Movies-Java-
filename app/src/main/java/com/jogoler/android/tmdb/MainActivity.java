@@ -109,8 +109,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 					.commit();
 		}
 
-		mMovieRecyclerView.setLayoutManager(new GridLayoutManager(this, getResources()
-				.getInteger(R.integer.grid_number_cols)));
+		mMovieRecyclerView.setLayoutManager(new GridLayoutManager(this, getResources().getInteger(R.integer.grid_number_cols)));
 		movieListAdapter = new MovieListAdapter(new ArrayList<Movie>(), this);
 		mMovieRecyclerView.setAdapter(movieListAdapter);
 

@@ -57,7 +57,7 @@ public class Trailer implements Parcelable, Comparable<Trailer> {
 
 	public String getKeyyy() {
 		if (key != null && !key.isEmpty()) {
-			return "http://www.youtube.com/onWatch?v=" + key;
+			return "http://www.youtube.com/watch?v=" + key;
 		}
 		return null;
 	}
