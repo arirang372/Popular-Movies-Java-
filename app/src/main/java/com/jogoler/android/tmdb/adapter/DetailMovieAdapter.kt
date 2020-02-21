@@ -4,14 +4,14 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.jogoler.android.tmdb.DetailMovieContract
 import com.jogoler.android.tmdb.R
 import com.jogoler.android.tmdb.pojo.Review
 import com.jogoler.android.tmdb.pojo.Trailer
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.review_list_content.view.*
-import kotlinx.android.synthetic.main.title_list_content.view.*
-import kotlinx.android.synthetic.main.trailer_list_content.view.*
 import java.util.*
 
 
@@ -89,7 +89,7 @@ class DetailMovieAdapter(private val listener: DetailMovieContract.MovieListener
 
     class TitleViewHolder(val view: View) : BaseViewHolder<String>(view) {
 
-        private val titleTextView = view.title_text_view_
+        private val titleTextView = view.findViewById<TextView>(R.id.title_text_view)
 
         override fun bind(title: String) {
             titleTextView.text = title
@@ -99,9 +99,9 @@ class DetailMovieAdapter(private val listener: DetailMovieContract.MovieListener
     class TrailerViewHolder(val view: View, val listener: DetailMovieContract.MovieListener,
                             val data: List<Comparable<*>>) : BaseViewHolder<Trailer>(view), View.OnClickListener {
 
-        val trailerListView = view.trailer_list_linear_layout
-        val titleTextView = view.trailer_title_text_view
-        val trailerImageView = view.thumbnail_trailer_image_view
+        val trailerListView = view.findViewById<LinearLayout>(R.id.trailer_list_linear_layout)
+        val titleTextView = view.findViewById<TextView>(R.id.trailer_title_text_view)
+        val trailerImageView = view.findViewById<ImageView>(R.id.thumbnail_trailer_image_view)
 
         override fun bind(trailer: Trailer) {
             val thumbnailUrl = "http://img.youtube.com/vi/" + trailer.key + "/0.jpg" // getKeyyy
@@ -126,9 +126,9 @@ class DetailMovieAdapter(private val listener: DetailMovieContract.MovieListener
 
     class ReviewViewHolder(val view: View, val listener: DetailMovieContract.MovieListener,
                            val data: List<Comparable<*>>) : BaseViewHolder<Review>(view), View.OnClickListener {
-        val reviewListView = view.review_list_linear_layout
-        val authorTextView = view.author_text_view
-        val reviewTextView = view.review_text_view
+        val reviewListView = view.findViewById<LinearLayout>(R.id.review_list_linear_layout)
+        val authorTextView = view.findViewById<TextView>(R.id.author_text_view)
+        val reviewTextView = view.findViewById<TextView>(R.id.review_text_view)
 
         override fun bind(review: Review) {
             authorTextView.text = review.author

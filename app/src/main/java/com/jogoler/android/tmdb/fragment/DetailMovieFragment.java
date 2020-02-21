@@ -1,8 +1,5 @@
 package com.jogoler.android.tmdb.fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -36,9 +33,9 @@ import com.jogoler.android.tmdb.pojo.Trailer;
 import com.jogoler.android.tmdb.pojo.Trailers;
 import com.squareup.picasso.Picasso;
 
-import butterknife.BindView;
-import butterknife.BindViews;
-import butterknife.ButterKnife;
+import java.util.ArrayList;
+import java.util.List;
+
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -55,262 +52,274 @@ import static com.jogoler.android.tmdb.data.MovieContract.MovieListEntry.CONTENT
  */
 public class DetailMovieFragment extends Fragment implements DetailMovieContract.MovieListener {
 
-	public static final String STATE_MOVIE = "STATE_MOVIE";
-	private DetailMovieAdapter detailMovieAdapter;
-	@BindView(R.id.list_item_recycler_view)
-	RecyclerView listItemRecyclerView;
-	@BindView(R.id.mark_as_favorite_button)
-	Button markAsFavoriteButton;
-	private Movie movie;
-	@BindView(R.id.movie_overview_text_view)
-	TextView overViewTextView;
-	@BindView(R.id.poster_movie_image_view)
-	ImageView posterMovieTextView;
-	@BindViews({R.id.first_star, R.id.second_star, R.id.third_star, R.id.fourth_star, R.id.fifth_star})
-	List<ImageView> ratingStarView;
-	@BindView(R.id.movie_release_date_text_view)
-	TextView releaseDateTextView;
-	@BindView(R.id.remove_from_favorites_button)
-	Button removeFromFavoriteButton;
-	@BindView(R.id.title_movie_text_view)
-	TextView titleMovieTextView;
-	@BindView(R.id.movie_user_rating_text_view)
-	TextView userRatingTextView;
+    public static final String STATE_MOVIE = "STATE_MOVIE";
+    private DetailMovieAdapter detailMovieAdapter;
 
-	public DetailMovieFragment() {
-		// Required empty public constructor
-	}
+    RecyclerView listItemRecyclerView;
+    Button markAsFavoriteButton;
+    private Movie movie;
 
-	private void fetchTrailersAndReviewsMovies() {
-		Observable.zip(getTrailersMovie(), getReviewsMovie(), new BiFunction<Response<Trailers>, Response<Reviews>, List<Comparable>>() {
-			@Override
-			public List apply(Response<Trailers> trailersResponse, Response<Reviews> reviewsResponse) throws Exception {
-				List<Comparable> combineList = new ArrayList();
-				List<Trailer> trailerList = trailersResponse.body().getTrailers();
-				List<Review> reviewList = reviewsResponse.body().getReviews();
-				combineList.add(getString(R.string.videos)); // magic string
-				combineList.addAll(trailerList);
-				combineList.add(getString(R.string.reviews)); // magic string
-				combineList.addAll(reviewList);
-				return combineList;
-			}
-		}).subscribe(new Observer<List<Comparable>>() {
-			@Override
-			public void onComplete() {
+    TextView overViewTextView;
+    ImageView posterMovieTextView;
+    List<ImageView> ratingStarView;
+    TextView releaseDateTextView;
+    Button removeFromFavoriteButton;
 
-			}
+    TextView titleMovieTextView;
+    TextView userRatingTextView;
 
-			@Override
-			public void onError(Throwable e) {
+    public DetailMovieFragment() {
+        // Required empty public constructor
+    }
 
-			}
+    private void fetchTrailersAndReviewsMovies() {
+        Observable.zip(getTrailersMovie(), getReviewsMovie(), new BiFunction<Response<Trailers>, Response<Reviews>, List<Comparable>>() {
+            @Override
+            public List apply(Response<Trailers> trailersResponse, Response<Reviews> reviewsResponse) throws Exception {
+                List<Comparable> combineList = new ArrayList();
+                List<Trailer> trailerList = trailersResponse.body().getTrailers();
+                List<Review> reviewList = reviewsResponse.body().getReviews();
+                combineList.add(getString(R.string.videos)); // magic string
+                combineList.addAll(trailerList);
+                combineList.add(getString(R.string.reviews)); // magic string
+                combineList.addAll(reviewList);
+                return combineList;
+            }
+        }).subscribe(new Observer<List<Comparable>>() {
+            @Override
+            public void onComplete() {
 
-			@Override
-			public void onNext(List list) {
-				detailMovieAdapter.swapData(list);
-			}
+            }
 
-			@Override
-			public void onSubscribe(Disposable d) {
+            @Override
+            public void onError(Throwable e) {
 
-			}
-		});
-	}
+            }
 
-	private Observable<Response<Reviews>> getReviewsMovie() {
-		return ApiUtils.getMovieService().getReviewsMovie(movie.getId(), BuildConfig.THE_MOVIE_DATABASE_API_KEY)
-				.subscribeOn(Schedulers.io())
-				.observeOn(AndroidSchedulers.mainThread());
-	}
+            @Override
+            public void onNext(List list) {
+                detailMovieAdapter.swapData(list);
+            }
 
-	private Observable<Response<Trailers>> getTrailersMovie() {
-		return ApiUtils.getMovieService().getTrailersMovie(movie.getId(), BuildConfig.THE_MOVIE_DATABASE_API_KEY)
-				.subscribeOn(Schedulers.io())
-				.observeOn(AndroidSchedulers.mainThread());
-	}
+            @Override
+            public void onSubscribe(Disposable d) {
 
-	private boolean isFavorite() {
-		Cursor cursorMovie = getContext().getContentResolver().query(
-				CONTENT_URI,
-				new String[]{MovieContract.MovieListEntry.COLUMN_ID},
-				MovieContract.MovieListEntry.COLUMN_ID + " = " + movie.getId(),
-				null,
-				null);
-		if (cursorMovie != null && cursorMovie.moveToFirst()) {
-			cursorMovie.close();
-			return true;
-		} else {
-			return false;
-		}
-	}
+            }
+        });
+    }
 
-	private void markAsFavorite() {
-		new AsyncTask<Void, Void, Void>() {
+    private Observable<Response<Reviews>> getReviewsMovie() {
+        return ApiUtils.getMovieService().getReviewsMovie(movie.getId(), BuildConfig.THE_MOVIE_DATABASE_API_KEY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 
-			@Override
-			protected Void doInBackground(Void... voids) {
-				if (!isFavorite()) {
-					ContentValues cv = new ContentValues();
-					cv.put(MovieContract.MovieListEntry.COLUMN_ID, movie.getId());
-					cv.put(MovieContract.MovieListEntry.COLUMN_TITLE, movie.getTitle());
-					cv.put(MovieContract.MovieListEntry.COLUMN_POSTER_PATH, movie.getPosterpath());
-					cv.put(MovieContract.MovieListEntry.COLUMN_OVERVIEW, movie.getOverview());
-					cv.put(MovieContract.MovieListEntry.COLUMN_VOTE_AVERAGE, movie.getVote_average());
-					cv.put(MovieContract.MovieListEntry.COLUMN_RELEASE_DATE, movie.getRelease_date());
-					cv.put(MovieContract.MovieListEntry.COLUMN_BACKDROP_PATH, movie.getBackdrop_path());
-					getContext().getContentResolver().insert(CONTENT_URI, cv);
-				}
-				return null;
-			}
+    private Observable<Response<Trailers>> getTrailersMovie() {
+        return ApiUtils.getMovieService().getTrailersMovie(movie.getId(), BuildConfig.THE_MOVIE_DATABASE_API_KEY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 
-			@Override
-			protected void onPostExecute(Void aVoid) {
-				super.onPostExecute(aVoid);
-				updateFavoriteButton();
-			}
-		}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-	}
+    private boolean isFavorite() {
+        Cursor cursorMovie = getContext().getContentResolver().query(
+                CONTENT_URI,
+                new String[]{MovieContract.MovieListEntry.COLUMN_ID},
+                MovieContract.MovieListEntry.COLUMN_ID + " = " + movie.getId(),
+                null,
+                null);
+        if (cursorMovie != null && cursorMovie.moveToFirst()) {
+            cursorMovie.close();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	@Override
-	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		Activity activity = getActivity();
-		CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout)
-				activity.findViewById(R.id.toolbar_layout);
-		if (collapsingToolbarLayout != null && activity instanceof DetailMovieActivity) {
-			collapsingToolbarLayout.setTitle(movie.getTitle());
-		}
+    private void markAsFavorite() {
+        new AsyncTask<Void, Void, Void>() {
 
-		ImageView backDropImageView = ((ImageView) activity.findViewById(R.id.movie_poster_image_view));
-		if (backDropImageView != null) {
-			Picasso.with(activity)
-					.load(movie.getBackdrop_path(getContext()))
-					.into(backDropImageView);
-		}
-	}
+            @Override
+            protected Void doInBackground(Void... voids) {
+                if (!isFavorite()) {
+                    ContentValues cv = new ContentValues();
+                    cv.put(MovieContract.MovieListEntry.COLUMN_ID, movie.getId());
+                    cv.put(MovieContract.MovieListEntry.COLUMN_TITLE, movie.getTitle());
+                    cv.put(MovieContract.MovieListEntry.COLUMN_POSTER_PATH, movie.getPosterpath());
+                    cv.put(MovieContract.MovieListEntry.COLUMN_OVERVIEW, movie.getOverview());
+                    cv.put(MovieContract.MovieListEntry.COLUMN_VOTE_AVERAGE, movie.getVote_average());
+                    cv.put(MovieContract.MovieListEntry.COLUMN_RELEASE_DATE, movie.getRelease_date());
+                    cv.put(MovieContract.MovieListEntry.COLUMN_BACKDROP_PATH, movie.getBackdrop_path());
+                    getContext().getContentResolver().insert(CONTENT_URI, cv);
+                }
+                return null;
+            }
 
-	@Override
-	public void onCreate(@Nullable Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		if (getArguments().containsKey(STATE_MOVIE)) {
-			movie = getArguments().getParcelable(STATE_MOVIE);
-		}
-	}
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                updateFavoriteButton();
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		View rootView = inflater.inflate(R.layout.fragment_detail_movie, container, false);
-		ButterKnife.bind(this, rootView);
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Activity activity = getActivity();
+        CollapsingToolbarLayout collapsingToolbarLayout = activity.findViewById(R.id.toolbar_layout);
+        if (collapsingToolbarLayout != null && activity instanceof DetailMovieActivity) {
+            collapsingToolbarLayout.setTitle(movie.getTitle());
+        }
 
-		titleMovieTextView.setText(movie.getTitle());
-		releaseDateTextView.setText(movie.getRelease_date(getContext()));
-		overViewTextView.setText(movie.getOverview());
+        ImageView backDropImageView = activity.findViewById(R.id.movie_poster_image_view);
+        if (backDropImageView != null) {
+            Picasso.with(activity)
+                    .load(movie.getBackdrop_path(getContext()))
+                    .into(backDropImageView);
+        }
+    }
 
-		Picasso.with(getContext())
-				.load(movie.getPoster_path(getContext()))
-				.into(posterMovieTextView);
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments().containsKey(STATE_MOVIE)) {
+            movie = getArguments().getParcelable(STATE_MOVIE);
+        }
+    }
 
-		upadateRatingBar();
-		updateFavoriteButton();
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_detail_movie, container, false);
+        setUpUI(rootView);
 
-		LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-		detailMovieAdapter = new DetailMovieAdapter(this);
-		listItemRecyclerView.setLayoutManager(layoutManager);
-		listItemRecyclerView.setAdapter(detailMovieAdapter);
-		fetchTrailersAndReviewsMovies();
-		return rootView;
-	}
+        titleMovieTextView.setText(movie.getTitle());
+        releaseDateTextView.setText(movie.getRelease_date(getContext()));
+        overViewTextView.setText(movie.getOverview());
 
-	@Override
-	public void onRead(Review review, int positio) {
-		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(review.getUrl())));
-	}
+        Picasso.with(getContext())
+                .load(movie.getPoster_path(getContext()))
+                .into(posterMovieTextView);
 
-	@Override
-	public void onWatch(Trailer trailer, int position) {
-		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(trailer.getKeyyy())));
-	}
+        upadateRatingBar();
+        updateFavoriteButton();
 
-	private void removeFromFavorite() {
-		new AsyncTask<Void, Void, Void>() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        detailMovieAdapter = new DetailMovieAdapter(this);
+        listItemRecyclerView.setLayoutManager(layoutManager);
+        listItemRecyclerView.setAdapter(detailMovieAdapter);
+        fetchTrailersAndReviewsMovies();
+        return rootView;
+    }
 
-			@Override
-			protected Void doInBackground(Void... voids) {
-				if (isFavorite()) {
-					getContext().getContentResolver().delete(
-							CONTENT_URI, MovieContract.MovieListEntry.COLUMN_ID + " = " + movie.getId(), null
-					);
-				}
-				return null;
-			}
+    private void setUpUI(View view) {
+        titleMovieTextView = view.findViewById(R.id.title_movie_text_view);
+        releaseDateTextView = view.findViewById(R.id.movie_release_date_text_view);
+        overViewTextView = view.findViewById(R.id.movie_overview_text_view);
 
-			@Override
-			protected void onPostExecute(Void aVoid) {
-				updateFavoriteButton();
-			}
-		}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-	}
+        listItemRecyclerView = view.findViewById(R.id.list_item_recycler_view);
+        markAsFavoriteButton = view.findViewById(R.id.mark_as_favorite_button);
+        posterMovieTextView = view.findViewById(R.id.poster_movie_image_view);
 
-	private void upadateRatingBar() {
-		if (movie.getVote_average() != null && !movie.getVote_average().isEmpty()) {
-			String rating = "TMDb: " + movie.getVote_average() + "/10";
-			userRatingTextView.setText(rating);
+        ratingStarView = new ArrayList<>();
+        ratingStarView.add(view.findViewById(R.id.first_star));
+        ratingStarView.add(view.findViewById(R.id.second_star));
+        ratingStarView.add(view.findViewById(R.id.third_star));
+        ratingStarView.add(view.findViewById(R.id.fourth_star));
+        ratingStarView.add(view.findViewById(R.id.fifth_star));
+        removeFromFavoriteButton = view.findViewById(R.id.remove_from_favorites_button);
+        userRatingTextView = view.findViewById(R.id.movie_user_rating_text_view);
+    }
 
-			float userRating = Float.valueOf(movie.getVote_average());
-			int partRating = (int) userRating / 2;
+    @Override
+    public void onRead(Review review, int positio) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(review.getUrl())));
+    }
 
-			for (int i = 0; i < partRating; i++) {
-				ratingStarView.get(i).setImageResource(R.mipmap.ic_star_full);
-				ratingStarView.get(i).getLayoutParams().width = 90;
-				ratingStarView.get(i).requestLayout();
-			}
+    @Override
+    public void onWatch(Trailer trailer, int position) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(trailer.getKeyyy())));
+    }
 
-			if (Math.round(userRating) > partRating) {
-				ratingStarView.get(partRating).setImageResource(R.mipmap.ic_star_half);
-				ratingStarView.get(partRating).getLayoutParams().width = 90;
-				ratingStarView.get(partRating).requestLayout();
-			}
-			userRatingTextView.setVisibility(GONE);
-		} else {
-			userRatingTextView.setVisibility(GONE);
-		}
-	}
+    private void removeFromFavorite() {
+        new AsyncTask<Void, Void, Void>() {
 
-	private void updateFavoriteButton() {
-		new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                if (isFavorite()) {
+                    getContext().getContentResolver().delete(
+                            CONTENT_URI, MovieContract.MovieListEntry.COLUMN_ID + " = " + movie.getId(), null
+                    );
+                }
+                return null;
+            }
 
-			@Override
-			protected Boolean doInBackground(Void... voids) {
-				return isFavorite();
-			}
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                updateFavoriteButton();
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
 
-			@Override
-			protected void onPostExecute(Boolean isFavorite) {
-				if (isFavorite) {
-					removeFromFavoriteButton.setVisibility(View.VISIBLE);
-					markAsFavoriteButton.setVisibility(GONE);
-				} else {
-					removeFromFavoriteButton.setVisibility(GONE);
-					markAsFavoriteButton.setVisibility(View.VISIBLE);
-				}
-			}
-		}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    private void upadateRatingBar() {
+        if (movie.getVote_average() != null && !movie.getVote_average().isEmpty()) {
+            String rating = "TMDb: " + movie.getVote_average() + "/10";
+            userRatingTextView.setText(rating);
 
-		markAsFavoriteButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				markAsFavorite();
-			}
-		});
+            float userRating = Float.valueOf(movie.getVote_average());
+            int partRating = (int) userRating / 2;
 
-		removeFromFavoriteButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				removeFromFavorite();
-			}
-		});
+            for (int i = 0; i < partRating; i++) {
+                ratingStarView.get(i).setImageResource(R.mipmap.ic_star_full);
+                ratingStarView.get(i).getLayoutParams().width = 90;
+                ratingStarView.get(i).requestLayout();
+            }
 
-	}
+            if (Math.round(userRating) > partRating) {
+                ratingStarView.get(partRating).setImageResource(R.mipmap.ic_star_half);
+                ratingStarView.get(partRating).getLayoutParams().width = 90;
+                ratingStarView.get(partRating).requestLayout();
+            }
+            userRatingTextView.setVisibility(GONE);
+        } else {
+            userRatingTextView.setVisibility(GONE);
+        }
+    }
+
+    private void updateFavoriteButton() {
+        new AsyncTask<Void, Void, Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                return isFavorite();
+            }
+
+            @Override
+            protected void onPostExecute(Boolean isFavorite) {
+                if (isFavorite) {
+                    removeFromFavoriteButton.setVisibility(View.VISIBLE);
+                    markAsFavoriteButton.setVisibility(GONE);
+                } else {
+                    removeFromFavoriteButton.setVisibility(GONE);
+                    markAsFavoriteButton.setVisibility(View.VISIBLE);
+                }
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        markAsFavoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                markAsFavorite();
+            }
+        });
+
+        removeFromFavoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                removeFromFavorite();
+            }
+        });
+
+    }
 }

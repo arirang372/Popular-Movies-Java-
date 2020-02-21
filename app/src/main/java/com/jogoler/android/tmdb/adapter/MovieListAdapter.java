@@ -36,15 +36,14 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
 		public Movie mMovie;
 		public final View mView;
-		@BindView(R.id.thumbnail_image_view)
 		ImageView thumbnailImageView;
-		@BindView(R.id.title_text_view)
 		TextView titleTextView;
 
 		public MovieListViewHolder(View itemView) {
 			super(itemView);
-			ButterKnife.bind(this, itemView);
 			mView = itemView;
+			thumbnailImageView = itemView.findViewById(R.id.thumbnail_image_view);
+			titleTextView = itemView.findViewById(R.id.title_text_view);
 		}
 
 		public void cleanUp() {
