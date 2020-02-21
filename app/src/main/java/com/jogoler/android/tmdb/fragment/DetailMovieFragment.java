@@ -54,17 +54,14 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
 
     public static final String STATE_MOVIE = "STATE_MOVIE";
     private DetailMovieAdapter detailMovieAdapter;
-
     RecyclerView listItemRecyclerView;
     Button markAsFavoriteButton;
     private Movie movie;
-
     TextView overViewTextView;
     ImageView posterMovieTextView;
     List<ImageView> ratingStarView;
     TextView releaseDateTextView;
     Button removeFromFavoriteButton;
-
     TextView titleMovieTextView;
     TextView userRatingTextView;
 
@@ -223,11 +220,11 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
         posterMovieTextView = view.findViewById(R.id.poster_movie_image_view);
 
         ratingStarView = new ArrayList<>();
-        ratingStarView.add(view.findViewById(R.id.first_star));
-        ratingStarView.add(view.findViewById(R.id.second_star));
-        ratingStarView.add(view.findViewById(R.id.third_star));
-        ratingStarView.add(view.findViewById(R.id.fourth_star));
-        ratingStarView.add(view.findViewById(R.id.fifth_star));
+        ratingStarView.add((ImageView) view.findViewById(R.id.first_star));
+        ratingStarView.add((ImageView) view.findViewById(R.id.second_star));
+        ratingStarView.add((ImageView) view.findViewById(R.id.third_star));
+        ratingStarView.add((ImageView) view.findViewById(R.id.fourth_star));
+        ratingStarView.add((ImageView) view.findViewById(R.id.fifth_star));
         removeFromFavoriteButton = view.findViewById(R.id.remove_from_favorites_button);
         userRatingTextView = view.findViewById(R.id.movie_user_rating_text_view);
     }
