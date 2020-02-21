@@ -1,7 +1,0 @@
-
-dsquid:MaximumInheritanceDepth"<This class has 8 parents which is greater than 5 authorized.(Î€˜4
-isquid:S00117f"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Þ†Ùü
-V"squid:SwitchLastCaseIsDefaultCheck“""Add a default case to this switch.(îÞ¨Èþÿÿÿÿ
-žsquid:S1186±"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(û±û¾úÿÿÿÿ
-˜squid:S1186&"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ëøð‚
-~squid:S1450N"aRemove the "mMovieRecyclerView" field and declare it as a local variable in the relevant methods.(˜ÅŸE8†É‘„.
