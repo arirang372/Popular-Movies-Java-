@@ -278,9 +278,6 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
                 ratingStarView.get(partRating).getLayoutParams().width = 90;
                 ratingStarView.get(partRating).requestLayout();
             }
-            userRatingTextView.setVisibility(GONE);
-        } else {
-            userRatingTextView.setVisibility(GONE);
         }
     }
 
