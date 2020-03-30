@@ -24,9 +24,9 @@ class DetailMovieAdapter(private val listener: DetailMovieContract.MovieListener
     private val data: MutableList<Comparable<*>>
 
     companion object {
-        private val TYPE_TITLE = 0
-        private val TYPE_TRAILER = 1
-        private val TYPE_REVIEW = 2
+        private const val TYPE_TITLE = 0
+        private const val TYPE_TRAILER = 1
+        private const val TYPE_REVIEW = 2
     }
 
     init {
@@ -69,12 +69,11 @@ class DetailMovieAdapter(private val listener: DetailMovieContract.MovieListener
     }
 
     override fun getItemViewType(position: Int): Int {
-        val comparable = data[position]
-        return when (comparable) {
+        return when (data[position]) {
             is String -> TYPE_TITLE
             is Trailer -> TYPE_TRAILER
             is Review -> TYPE_REVIEW
-            else -> throw IllegalArgumentException("Invalid type of data " + position)
+            else -> throw IllegalArgumentException("Invalid type of data $position")
         }
 
     }
@@ -87,7 +86,7 @@ class DetailMovieAdapter(private val listener: DetailMovieContract.MovieListener
         abstract fun bind(item: T)
     }
 
-    class TitleViewHolder(val view: View) : BaseViewHolder<String>(view) {
+    class TitleViewHolder(view: View) : BaseViewHolder<String>(view) {
 
         private val titleTextView = view.findViewById<TextView>(R.id.title_text_view)
 
@@ -96,12 +95,12 @@ class DetailMovieAdapter(private val listener: DetailMovieContract.MovieListener
         }
     }
 
-    class TrailerViewHolder(val view: View, val listener: DetailMovieContract.MovieListener,
-                            val data: List<Comparable<*>>) : BaseViewHolder<Trailer>(view), View.OnClickListener {
+    class TrailerViewHolder(private val view: View, private val listener: DetailMovieContract.MovieListener,
+                            private val data: List<Comparable<*>>) : BaseViewHolder<Trailer>(view), View.OnClickListener {
 
-        val trailerListView = view.findViewById<LinearLayout>(R.id.trailer_list_linear_layout)
-        val titleTextView = view.findViewById<TextView>(R.id.trailer_title_text_view)
-        val trailerImageView = view.findViewById<ImageView>(R.id.thumbnail_trailer_image_view)
+        private val trailerListView = view.findViewById<LinearLayout>(R.id.trailer_list_linear_layout)
+        private val titleTextView = view.findViewById<TextView>(R.id.trailer_title_text_view)
+        private val trailerImageView = view.findViewById<ImageView>(R.id.thumbnail_trailer_image_view)
 
         override fun bind(trailer: Trailer) {
             val thumbnailUrl = "http://img.youtube.com/vi/" + trailer.key + "/0.jpg" // getKeyyy
@@ -124,11 +123,11 @@ class DetailMovieAdapter(private val listener: DetailMovieContract.MovieListener
         }
     }
 
-    class ReviewViewHolder(val view: View, val listener: DetailMovieContract.MovieListener,
-                           val data: List<Comparable<*>>) : BaseViewHolder<Review>(view), View.OnClickListener {
-        val reviewListView = view.findViewById<LinearLayout>(R.id.review_list_linear_layout)
-        val authorTextView = view.findViewById<TextView>(R.id.author_text_view)
-        val reviewTextView = view.findViewById<TextView>(R.id.review_text_view)
+    class ReviewViewHolder(view: View, private val listener: DetailMovieContract.MovieListener,
+                           private val data: List<Comparable<*>>) : BaseViewHolder<Review>(view), View.OnClickListener {
+        private val reviewListView = view.findViewById<LinearLayout>(R.id.review_list_linear_layout)
+        private val authorTextView = view.findViewById<TextView>(R.id.author_text_view)
+        private val reviewTextView = view.findViewById<TextView>(R.id.review_text_view)
 
         override fun bind(review: Review) {
             authorTextView.text = review.author
